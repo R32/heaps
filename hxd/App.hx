@@ -172,6 +172,9 @@ class App implements h3d.IDrawable {
 		First call is done after the application is set up (so `loadAssets` and `init` are called).
 
 		@param dt Time elapsed since last frame, normalized.
+
+		对于 flash/js 平台, 如果 wantedFPS == 60, 这时 dt 将会保持在 1.0 左右,
+		假如程序中设置 wantedFPS == 30，那么 dt 则保持在在 30/60 * 1.0 左右。
 	**/
 	@:dox(show)
 	function update( dt : Float ) {

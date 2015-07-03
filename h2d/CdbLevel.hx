@@ -4,17 +4,33 @@ package h2d;
 "Please compile with -lib castle"
 #end
 
+/**
+
+- file: 对应的图片文件名
+- stride: TODO: 默认和 size 一样为 16
+- size: tile小块的像素大小, 默认为 16
+*/
 typedef TileSpec = {
 	var file(default, never) : String;
 	var stride(default, never) : Int;
 	var size(default, never) : Int;
 }
 
+/**
+tile_layer
+*/
 typedef LayerSpec = {
 	var name : String;
 	var data : cdb.Types.TileLayer;
 }
 
+/**
+对应 level sheet 表中的其中一行, 因此实际上除了下边属性还有 index_layer,zone_layer,list_layer 这些如果你定义了的话
+- width/height: tile 的数量大小
+- props: 对应于castle中level表的 props 字段(这个字段一般由编译器自动填充)
+- tileProps: 对应于castle中level表的tileProps 字段
+- layers: 为castle中的 tile_layer
+*/
 typedef LevelSpec = {
 	var width : Int;
 	var height : Int;
@@ -23,6 +39,9 @@ typedef LevelSpec = {
 	var layers : Array<LayerSpec>;
 }
 
+/**
+* 所有你在画布上操作设置
+*/
 class LevelTileset {
 	public var stride : Int;
 	public var size : Int;
@@ -43,6 +62,9 @@ class LevelTileset {
 	}
 }
 
+/**
+* 参考 castle 编辑器上的 Object Mode
+*/
 class LevelObject {
 	public var tileset : LevelTileset;
 	public var id : Int;
@@ -81,25 +103,34 @@ enum LevelLayerData {
 	LObjects( objects : Array<LevelObjectInstance> );
 }
 
+/**
+关卡层, 即castle中tile_layer的层
+*/
 class LevelLayer {
 
 	/**
 		Which level this layer belongs to
+		图层属于哪一个 CdbLevel
 	**/
 	public var level : CdbLevel;
 
 	/**
 		The name of the layer, as it was created in CDB
+		图层的名字, 和 castle 中创建的一样.
 	**/
 	public var name : String;
 
 	/**
 		CdbLevel extends Layers: this index will tell in which sprite layer this LevelLayer content is added to.
+
+		图层位于其数组中的索引
 	**/
 	public var layerIndex(default,null) : Int;
 
 	/**
 		The raw data of the layer. You can read it or modify it then set needRedraw=true to update it on screen.
+
+		图层的 raw 数据形式, 你可以设 needRedraw=true, 即可以在屏幕上看到这个图层
 	**/
 	public var data : LevelLayerData;
 
@@ -110,6 +141,8 @@ class LevelLayer {
 
 	/**
 		If the layer needs to be redrawn, it's set to true.
+
+		如果这个层需要画到屏幕需要设置为 true
 	**/
 	public var needRedraw = true;
 
@@ -221,14 +254,39 @@ class LevelLayer {
 **/
 class CdbLevel extends Layers {
 
+	/**
+	* 宽和高都将表示 tile 的数量
+	*/
 	public var width(default, null) : Int;
 	public var height(default, null) : Int;
+
+	/**
+	* 对应 castle 中 level sheet(关卡表)中的一行数据
+	*/
 	public var level(default, null) : LevelSpec;
+
+	/**
+	* 包含所有 tile_layer
+	*/
 	public var layers : Array<LevelLayer>;
+
+	/**
+	* 包含所有你在画布(例如某一个png图片)上的操作, 例如你设置其中的几个小块(tile)为border 或 object
+	*/
 	var tilesets : Map<String, LevelTileset>;
+
+	/**
+	* 包含所有 tile_layer
+	*/
 	var layersMap : Map<String, LevelLayer>;
 	var levelsProps : cdb.Data.LevelsProps;
 
+	/**
+	* e.g `new CdbLevel(Data.levelData, 0, s2d);`
+	* @param allLevels :level sheet(关卡表)
+	* @param index : 其位于 level_sheet 中的第几行数据(默认第一行为 0)
+	* @param parent : 将要添加到的哪一个父图层(Layers)
+	*/
 	public function new(allLevels:cdb.Types.Index<Dynamic>,index:Int,?parent) {
 		super(parent);
 		levelsProps = @:privateAccess allLevels.sheet.props.level;

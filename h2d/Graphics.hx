@@ -355,7 +355,9 @@ class Graphics extends Drawable {
 	/**
 		Position a virtual tile at the given position and scale. Every draw will display a part of this tile relative
 		to these coordinates.
-	**/
+		tile 将对应于整个 graphics 的大小，如果 tile 不够大则将用边缘值填充，（感觉非常不好控制）
+		注: dx, dy 都为 0 时表示 Tile 的左上角，-width,-height 则为右下角
+	*/
 	public function beginTileFill( ?dx : Float, ?dy : Float, ?scaleX : Float, ?scaleY : Float, ?tile : h2d.Tile ) {
 		beginFill(0xFFFFFF);
 		if( dx == null ) dx = 0;
@@ -404,6 +406,9 @@ class Graphics extends Drawable {
 		lineB = (color & 0xFF) / 255.;
 	}
 
+	/**
+	 移动笔触到指定坐标，用于配合 LineTo
+	*/
 	public inline function moveTo(x,y) {
 		flush();
 		lineTo(x, y);
@@ -421,6 +426,9 @@ class Graphics extends Drawable {
 		curB = (color & 0xFF) / 255.;
 	}
 
+	/**
+	注意: x, y 值是相对于当前 graphics 的位置，其它方法的 cx, 或 cy 也全是这样。
+	*/
 	public function drawRect( x : Float, y : Float, w : Float, h : Float ) {
 		flush();
 		lineTo(x, y);
@@ -431,6 +439,14 @@ class Graphics extends Drawable {
 		flush();
 	}
 
+	/**
+	*
+	* @param cx : 圆心点 X 值，相对于 graphics
+	* @param cy : 圆心点 Y 值，相对于 graphics
+	* @param radius :
+	* @param nsegments = 0 : 指定微分圆线段的数量，如果为 0 则为线段数量为 `周长个像素点 / 4`，
+	同时如果不为 0，则最低值为 3，那么画出来的结果应该是个三角形。
+	*/
 	public function drawCircle( cx : Float, cy : Float, radius : Float, nsegments = 0 ) {
 		flush();
 		if( nsegments == 0 )
@@ -444,6 +460,16 @@ class Graphics extends Drawable {
 		flush();
 	}
 
+	/**
+	*
+	* @param cx
+	* @param cy
+	* @param radius
+	* @param angleStart : 弧度从最右开始为 0
+	* @param angleLength : 从起始点开始算弧度的终点
+	* @param nsegments = 0 : 参考 drawCircle，但起点和终点将连线到圆心点，如果 alen 为 `Math.PI * 2`
+	 则表示起点终点在同一点，这时相当于少画了一个点，此时需要 4 才能画个三角形
+	*/
 	public function drawPie( cx : Float, cy : Float, radius : Float, angleStart:Float, angleLength:Float, nsegments = 0 ) {
 		if(Math.abs(angleLength) >= Math.PI * 2) {
 			return drawCircle(cx, cy, radius, nsegments);
@@ -462,6 +488,9 @@ class Graphics extends Drawable {
 		flush();
 	}
 
+	/**
+	 画线到指点 x, y 点（相对于 graphics 的位置，在调用这个方法之前你至少需要调用一次 moveTo)
+	*/
 	public inline function lineTo( x : Float, y : Float ) {
 		addVertex(x, y, curR, curG, curB, curA, x * ma + y * mc + mx, x * mb + y * md + my);
 	}

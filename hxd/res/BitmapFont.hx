@@ -1,5 +1,10 @@
 package hxd.res;
 
+/**
+FontBuilder 创建的位图字体(png + fnt(xml))文件，看上很复杂但它其实非常容易使用，
+
+你根本不需要关心这个类，仅通过 Res 就可以将这个位图字体转换成 h2d.Font 类.
+*/
 class BitmapFont extends Resource {
 
 	var loader : Loader;

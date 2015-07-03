@@ -1,5 +1,8 @@
 package hxd.fs;
 
+/**
+* **读** 建立在 FileEntry 之上, 而继承实现 haxe.io.Input
+*/
 class FileInput extends haxe.io.Input {
 
 	var f : FileEntry;

@@ -1,5 +1,9 @@
 package hxd.fs;
 
+/**
+* 文件条目, 包含 文件名,路径,扩展名..等属性 需要扩展这个类, 如 LocalEntry,
+* 通常一个 FileEntry 有一个与它相对应的 FileSystem
+*/
 class FileEntry {
 
 	public var name(default, null) : String;

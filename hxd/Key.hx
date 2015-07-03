@@ -1,5 +1,8 @@
 package hxd;
 
+/**
+* 任何时候(存在有Engine时) 可以检测这个类的 isDown isPressed isReleased
+*/
 class Key {
 
 	public static inline var BACKSPACE	= 8;

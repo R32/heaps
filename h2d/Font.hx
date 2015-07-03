@@ -45,6 +45,9 @@ class FontChar {
 
 }
 
+/**
+  bitmap Font
+*/
 class Font {
 
 	public var name(default, null) : String;
@@ -110,6 +113,8 @@ class Font {
 
 	/**
 		This is meant to create smoother fonts by creating them with double size while still keeping the original glyph size.
+
+		以 缩放图片的形式将字体缩放到指定大小, 因此字体可能将会模糊
 	**/
 	public function resizeTo( size : Int ) {
 		var ratio = size / initSize;

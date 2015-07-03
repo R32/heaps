@@ -16,6 +16,9 @@ abstract Key<T>(String) {
 	}
 }
 
+/**
+ https://github.com/R32/heaps/wiki/DynamicText
+*/
 class DynamicText {
 
 	public static function parse( data : String ) : Dynamic {

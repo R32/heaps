@@ -1,5 +1,8 @@
 package hxd;
-
+/**
+* 方向. 由2D坐标(x,y) 推出 上(0,-1), 下(0,1), 右(1,0), 左(-1,0)
+* 左上(-1,-1) 右上(1,-1) 左下(-1,1) 右下(1,1)
+*/
 @:enum abstract Direction(Int) {
 
 	public var Up = 1;

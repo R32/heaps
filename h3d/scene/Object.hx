@@ -141,6 +141,7 @@ class Object implements hxd.impl.Serializable {
 	inline function set_allowSerialize(b) return !flags.set(FNoSerialize, !b);
 	inline function set_ignoreParentTransform(b) return flags.set(FIgnoreParentTransform, b);
 
+
 	public function playAnimation( a : h3d.anim.Animation ) {
 		return currentAnimation = a.createInstance(this);
 	}

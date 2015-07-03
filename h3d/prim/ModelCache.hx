@@ -1,5 +1,16 @@
 package h3d.prim;
 
+/**
+FBX 缓存器，你应该像下边这样获得 3D 资源:
+
+```haxe
+cache = new h3d.prim.ModelCache();
+
+var obj = cache.loadModel(hxd.Res.Model);
+
+obj.playAnimation(cache.loadAnimation(hxd.Res.Model));
+```
+*/
 class ModelCache {
 
 	var models : Map<String, hxd.fmt.hmd.Library>;

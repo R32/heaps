@@ -1,7 +1,9 @@
 package h2d;
 
+/**
+* 处理交互, 一般来说 override 一些类似于 onClick 的方法就行了
+*/
 class Interactive extends Drawable implements hxd.SceneEvents.Interactive {
-
 	public var width : Float;
 	public var height : Float;
 	public var cursor(default,set) : hxd.Cursor;
@@ -235,6 +237,9 @@ class Interactive extends Drawable implements hxd.SceneEvents.Interactive {
 	public dynamic function onOut( e : hxd.Event ) {
 	}
 
+	/**
+	当鼠标按下时即触发, 相当于 MOUSE_DOWN
+	*/
 	public dynamic function onPush( e : hxd.Event ) {
 	}
 

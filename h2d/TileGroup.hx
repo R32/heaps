@@ -384,6 +384,10 @@ private class TileLayerContent extends h3d.prim.Primitive {
 
 }
 
+
+/**
+ 适合用于静止的东西，例如: 地图, 对话框(参见 h2d.ScaleGrid), 感觉非常适合来做 UI 的背景。
+*/
 class TileGroup extends Drawable {
 
 	var content : TileLayerContent;
@@ -413,6 +417,8 @@ class TileGroup extends Drawable {
 	/**
 		If you want to add tiles after the GPU memory has been allocated (when the tilegroup with sync/displayed),
 		make sure to call invalidate() first to force a refresh of your data.
+
+		如果在 sync(即已经显示了) 之后，你还想要添加 tiles, 则需要调用此方法强制刷新数据。
 	**/
 	public function invalidate() : Void {
 		content.dispose();
@@ -429,7 +435,9 @@ class TileGroup extends Drawable {
 		content.dispose();
 		super.onRemove();
 	}
-
+	/**
+	 更改整个 group 的颜色
+	*/
 	public function setDefaultColor( rgb : Int, alpha = 1.0 ) {
 		curColor.x = ((rgb >> 16) & 0xFF) / 255;
 		curColor.y = ((rgb >> 8) & 0xFF) / 255;
@@ -437,10 +445,16 @@ class TileGroup extends Drawable {
 		curColor.w = alpha;
 	}
 
+	/**
+	 添加 t 但使用全局颜色, t 应该为 tile 的 sub 块
+	*/
 	public inline function add(x : Int, y : Int, t : h2d.Tile) {
 		content.add(x, y, curColor.x, curColor.y, curColor.z, curColor.w, t);
 	}
 
+	/**
+	 添加 t 并使用指定颜色, t 应该为 tile 的 sub 块
+	*/
 	public inline function addColor( x : Int, y : Int, r : Float, g : Float, b : Float, a : Float, t : Tile) {
 		content.add(x, y, r, g, b, a, t);
 	}

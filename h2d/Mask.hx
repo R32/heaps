@@ -1,5 +1,8 @@
 package h2d;
 
+/**
+一个限定了大小的容器,  用于限制子元素的显示
+*/
 class Mask extends Sprite {
 
 	public var width : Int;

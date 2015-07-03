@@ -1,5 +1,7 @@
 package hxd;
-
+/**
+ 字符集 
+*/
 class Charset {
 
 	/**

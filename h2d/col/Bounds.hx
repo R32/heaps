@@ -244,5 +244,4 @@ class Bounds {
 		b.setMax(max);
 		return b;
 	}
-
 }

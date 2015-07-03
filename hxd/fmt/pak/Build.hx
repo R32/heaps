@@ -1,6 +1,9 @@
 package hxd.fmt.pak;
 import hxd.fmt.pak.Data;
 
+/**
+ 将资源目录打包, 实际上可以不需要直接调用这个类, 直接运行 haxelib run heaps pak [res] 即可
+*/
 class Build {
 
 	var fs : hxd.fs.LocalFileSystem;

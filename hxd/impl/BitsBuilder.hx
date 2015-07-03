@@ -1,7 +1,37 @@
 package hxd.impl;
 import haxe.macro.Context;
 using haxe.macro.Tools;
+/**
 
+通过宏构建自动生成一些进制位的 掩码及其它, 当你喜欢用二进制的不同位来当标记使用时,
+
+使用方法:
+
+ - 通过在类上添加 @:build(hxd.impl.BitsBuilder.build())
+
+ - 定义一个 var_name:Int 的字段, 因为所有对 被标记 `@:bits` 的字段的操作都会改变这个的值.
+
+ - 把 @:bits(var_name, len) 附加到各字段上. 接受 Int, Bool, Enum 类型的字段. 如果你需要用 EnumFlags 来配合 enum, 那么请选译 Int 类型.
+
+   - Int 必须指定 len
+
+   - Enum 类型 len 为可选, 如果不指定将会自计算. 如果 Enum 有 12 个子项, 那么将自动为 4 位, 因为4位就可以表示 15 以下的
+
+   - Bool 则可省略, 自动为 1
+
+例: @:bits(4) public var lang:Int;
+
+这里将会生成静态方法 getLang(v:Int):Int , 用于将 v 过滤成属性 lang 能接受的值,<br />
+静态常量:	lang_bits:Int	= 4; 	表示 lang 所占用的宽度<br />
+			lang_offset:Int	= 0; 	由于这是第一个 @:bits, 所以为0, 0 表示为32位数字中最右位<br />
+			lang_mask:Int 	= 0x	掩码.<br />
+
+成员方法:	lang_set()	;	这个 setter 通过调用 getLang 来过滤  <br />
+
+通常来说不必理会静态方法及静态常量, 正常赋值就行了(会自动调用setter过滤),<br />
+
+参看 h3d.mat.Pass 和 h3d.mat.Stencil 如何使用它
+*/
 class BitsBuilder {
 
 	public static function build() {

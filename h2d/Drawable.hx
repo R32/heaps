@@ -14,7 +14,7 @@ class Drawable extends Sprite {
 	public var blendMode : BlendMode;
 	public var smooth : Null<Bool>;
 	public var tileWrap(default, set) : Bool;
-	public var colorKey(default, set) : Null<Int>;
+	public var colorKey(default, set) : Null<Int>;   // 设置将被忽略的颜色, 通常用于忽略背影颜色
 	public var colorMatrix(get, set) : Null<h3d.Matrix>;
 	public var colorAdd(get, set) : Null<h3d.Vector>;
 

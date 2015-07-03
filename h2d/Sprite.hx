@@ -238,10 +238,19 @@ class Sprite {
 		return b;
 	}
 
+	/**
+	* 将 sprite 添加到 显示顶层(即 index 值最大)
+	* @param s
+	*/
 	public function addChild( s : Sprite ) : Void {
 		addChildAt(s, children.length);
 	}
 
+	/**
+	*
+	* @param s
+	* @param pos 0 将最先展现,所以将位于显示列表最 **底** 层
+	*/
 	public function addChildAt( s : Sprite, pos : Int ) : Void {
 		if( pos < 0 ) pos = 0;
 		if( pos > children.length ) pos = children.length;
@@ -704,6 +713,9 @@ class Sprite {
 		return rotation = v;
 	}
 
+	/**
+	 沿着 rotation 的方向移动, 如果 rotation 为 0, 则仅移动 X 轴, 如果 rotation = PI/2 则仅移动 Y 轴
+	*/
 	public function move( dx : Float, dy : Float ) {
 		x += dx * Math.cos(rotation);
 		y += dy * Math.sin(rotation);
@@ -714,6 +726,9 @@ class Sprite {
 		this.y = y;
 	}
 
+	/**
+	 以增量的方式调整 rotation 的值
+	*/
 	public inline function rotate( v : Float ) {
 		rotation += v;
 	}

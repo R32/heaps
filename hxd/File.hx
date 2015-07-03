@@ -20,6 +20,11 @@ typedef BrowseSelect = {
 	function load( onReady : haxe.io.Bytes -> Void ) : Void;
 }
 
+/**
+* 类似于 sys.io.File 的类, 对于 flash(非air), load/browse/saveAs/applicationPath/isAir 可用,
+*
+* 而 exists/delete/delete/....等文件级别的方法需要 air/sys 支持
+*/
 class File {
 
 	#if flash

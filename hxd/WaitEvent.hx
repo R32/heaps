@@ -1,5 +1,8 @@
 package hxd;
 
+/**
+* 等待, 直到回调函数返回 true, 才移除回调函数, 需要将 update 放入到 MainLoop 中去.
+*/
 class WaitEvent {
 
 	var updateList : Array<Float -> Bool> ;

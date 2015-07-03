@@ -1,5 +1,10 @@
 package h2d;
 
+/**
+如果你需要将一个方框样的材质做成对话框的话, 可以使用这个类.
+
+你可以按需求设置这个类的 width 和 height, 或者调用 setDefaultColor 更改材质原来的颜色
+*/
 class ScaleGrid extends h2d.TileGroup {
 
 

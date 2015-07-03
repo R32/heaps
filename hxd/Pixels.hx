@@ -6,7 +6,9 @@ enum Flags {
 	FlipY;
 }
 
+
 @:forward(bytes, width, height, offset, flags, clear, dispose, toPNG, clone, toVector, sub, blit)
+
 abstract PixelsARGB(Pixels) to Pixels {
 
 
@@ -58,8 +60,14 @@ abstract PixelsFloat(Pixels) to Pixels {
 	public static inline function fromInt( v : Int ) : Channel return cast v;
 }
 
+/**
+* 平台无关的像素块, 可转换为 PNG
+*/
 @:noDebug
 class Pixels {
+	/**
+	 每 bytesPerPixel 个字节为一个单位。
+	*/
 	public var bytes : haxe.io.Bytes;
 	public var format(get,never) : PixelFormat;
 	public var width : Int;
@@ -116,6 +124,9 @@ class Pixels {
 		return if( flags.has(FlipY) ) this.height - 1 - y else y;
 	}
 
+	/**
+	 从 src 处复制颜色到当前
+	*/
 	public function blit( x : Int, y : Int, src : hxd.Pixels, srcX : Int, srcY : Int, width : Int, height : Int ) {
 		if( x < 0 || y < 0 || x + width > this.width || y + height > this.height )
 			throw "Pixels.blit() outside bounds";
@@ -206,6 +217,12 @@ class Pixels {
 		return vec;
 	}
 
+
+	/**
+	* 返回的 Pixels 大小将为  2的n次幂 大小
+	* @param copy 如果为true,将新建一个 Pixels对象返回,但是如果Pixel已经满足2n次幂要求,则会忽略这个参数
+	*/
+
 	public function makeSquare( ?copy : Bool ) {
 		var w = width, h = height;
 		var tw = w == 0 ? 0 : 1, th = h == 0 ? 0 : 1;
@@ -269,6 +286,10 @@ class Pixels {
 		}
 	}
 
+	/**
+	* bytes值勤ARGB RGBA BGRA 的相互转换.
+	* @param target
+	*/
 	public function convert( target : PixelFormat ) {
 		if( format == target )
 			return;
@@ -324,6 +345,9 @@ class Pixels {
 		innerFormat = target;
 	}
 
+	/**
+	 获得 x ,y 处的颜色值
+	*/
 	public function getPixel(x, y) : Int {
 		var p = ((x + yflip(y) * width) * bytesPerPixel) + offset;
 		switch(format) {
@@ -385,6 +409,9 @@ class Pixels {
 		return p;
 	}
 
+	/**
+	 返回每个颜色值所占用的字节。
+	*/
 	public static function getBytesPerPixel( format : PixelFormat ) {
 		return switch( format ) {
 		case ARGB, BGRA, RGBA, SRGB, SRGB_ALPHA: 4;
@@ -433,6 +460,9 @@ class Pixels {
 		}
 	}
 
+	/**
+	 分配一个指定大小,以及格式的像素块, 相对于 new 这个方法不需要提供 Bytes 参数
+	*/
 	public static function alloc( width, height, format : PixelFormat ) {
 		return new Pixels(width, height, haxe.io.Bytes.alloc(width * height * getBytesPerPixel(format)), format);
 	}

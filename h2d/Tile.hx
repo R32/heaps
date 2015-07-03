@@ -10,6 +10,9 @@ class Tile {
 	var u2 : Float;
 	var v2 : Float;
 
+	/**
+	默认的 dx dy 为 0  即左上角, 右下角为 -width,-height，因此当 dx,dy 都为正数时，坐标是在 0 左上方。
+	*/
 	public var dx : Int;
 	public var dy : Int;
 	public var x(default,null) : Int;
@@ -50,29 +53,48 @@ class Tile {
 		setTexture(t.innerTex);
 	}
 
+	/**
+	* 实际上你应该使用某些工具来做这个更为方便, 例如 castleDb。
+	*/
 	public function sub( x : Int, y : Int, w : Int, h : Int, dx = 0, dy = 0 ) : Tile {
 		return new Tile(innerTex, this.x + x, this.y + y, w, h, dx, dy);
 	}
 
+	/**
+	* 返回一个新的Tile, 支点(pivot)位于中心点,移动坐标或旋转都将以支点为基准
+	*/
 	public function center():Tile {
 		return sub(0, 0, width, height, -(width>>1), -(height>>1));
 	}
 
+	/**
+	 设置 dx/dy 的位置，默认为 0.5/0.5 即 tile 的中心.
+	*/
 	public inline function setCenterRatio(?px:Float=0.5, ?py:Float=0.5) : Void {
 		dx = -Std.int(px*width);
 		dy = -Std.int(py*height);
 	}
 
+	/**
+	* Y轴水平翻转(左右), 翻转之后 dx 的值将会被修改(表现为沿 dx 轴翻转)
+	*/
 	public function flipX() : Void {
 		var tmp = u; u = u2; u2 = tmp;
 		dx = -dx - width;
 	}
 
+	/**
+	* X轴水平翻转(上下), 翻转之后 dy 的值将会改动(表现为沿 dy 轴翻转)
+	*/
 	public function flipY() : Void {
 		var tmp = v; v = v2; v2 = tmp;
 		dy = -dy - height;
 	}
 
+	/**
+	 设置 x y 坐标, 需要注意的是 tile 的 x, y 和其它 sprite 的效果并不一样的
+	 是用来微调当前 tile 位于 texture 中的位置，而非相对于显示列表的父元素
+	*/
 	public function setPos(x : Int, y : Int) : Void {
 		this.x = x;
 		this.y = y;
@@ -85,6 +107,9 @@ class Tile {
 		}
 	}
 
+	/**
+	调整尺寸(当前 tile 位于 texture 的大小), 仅调整右下角的 uv 值, 因此不会引起缩放
+	*/
 	public function setSize(w : Int, h : Int) : Void {
 		this.width = w;
 		this.height = h;
@@ -95,11 +120,21 @@ class Tile {
 		}
 	}
 
+	/**
+	 缩放到指定大小。
+	*/
 	public function scaleToSize( w : Int, h : Int ) : Void {
 		this.width = w;
 		this.height = h;
 	}
 
+	/**
+	 更改其位于 texture 中的位置从而产生一种 scroll 的效果
+
+	 (filter.Displacement 滤镜特效也可能会用到它, 参看 samples/Filters.hx
+	 使用这种特效时需要禁止将这个 tile 作为 sprite 展现(即使是 clone 的都不行, 除非通过 bitmapData),
+	 因为它会导致将会滚动出边界而使这个特效失去效果.)
+	*/
 	public function scrollDiscrete( dx : Float, dy : Float ) : Void {
 		var tex = innerTex;
 		u += dx / tex.width;
@@ -127,6 +162,7 @@ class Tile {
 
 	/**
 		Split horizontaly or verticaly the number of given frames
+		根据 frames 的值分割，默认为水平方向(即 vertical = false)。
 	**/
 	public function split( frames : Int = 0, vertical = false ) : Array<Tile> {
 		var tl = [];
@@ -149,6 +185,7 @@ class Tile {
 	/**
 		Split the tile into a list of tiles of Size x Size pixels.
 		Unlike grid which is X/Y ordered, gridFlatten returns a single dimensional array ordered in Y/X.
+		根据指定的 size 值将 tile 分割成一个 "横条" 的一唯数组。
 	**/
 	public function gridFlatten( size : Int, dx = 0, dy = 0 ) : Array<Tile> {
 		return [for( y in 0...Std.int(height / size) ) for( x in 0...Std.int(width / size) ) sub(x * size, y * size, size, size, dx, dy)];
@@ -156,6 +193,7 @@ class Tile {
 
 	/**
 		Split the tile into a list of tiles of Size x Size pixels.
+		根据指定的 size 将 tile 分割成 "坚条" 的二唯数组, 每一个坚条是一个 tile 数组。
 	**/
 	public function grid( size : Int, dx = 0, dy = 0 ) : Array<Array<Tile>> {
 		return [for( x in 0...Std.int(width / size) ) [for( y in 0...Std.int(height / size) ) sub(x * size, y * size, size, size, dx, dy)]];
@@ -195,6 +233,10 @@ class Tile {
 		return new Tile(tex, 0, 0, bmp.width, bmp.height);
 	}
 
+	/**
+	 这个方法比上边的 gird 要更智能一些, 通过指定的 width/height 自动裁剪 bmp 上各个 tile 到 texture,
+	 将自动通过 isEmpty 来判断 tile 的边界及空块
+	*/
 	public static function autoCut( bmp : hxd.BitmapData, width : Int, ?height : Int, ?allocPos : h3d.impl.AllocPos ) {
 		#if js
 		bmp.lock();

@@ -1,5 +1,10 @@
 package hxd.res;
 
+/**
+用于表示 res 资源文件夹下的字体文件, 这个方法将通过 FontBuilder 来动态创建字体图贴(tile)
+
+由于感觉动态创建字体不太好，因此建议使用 BitmapFont
+*/
 class Font extends Resource {
 
 	public function build( size : Int, ?options ) : h2d.Font {

@@ -1,5 +1,8 @@
 package h3d.impl;
 
+/**
+内存管理. 管理 顶点坐标索引(Indexes), 顶点坐标缓冲(buffers), 材质(textures), 
+*/
 class MemoryManager {
 
 	static inline var MAX_MEMORY = #if flash 250 #else 4096 #end * (1024. * 1024.); // MB

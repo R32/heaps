@@ -1,14 +1,25 @@
 package h2d;
 import hxd.Math;
 
+/**
+场景, 2D 的根
+*/
 class Scene extends Layers implements h3d.IDrawable implements hxd.SceneEvents.InteractiveScene {
-
-	public var width(default,null) : Int;
+	/**
+	* 如果 fixedSize 为 true, 则作为 缩放时的 基值, 参看 setFixedSize
+	*/
+	public var width(default, null) : Int;
 	public var height(default, null) : Int;
 
+	/**
+	* 鼠标的位置,移出界面时为最后停留时位置
+	*/
 	public var mouseX(get, null) : Float;
 	public var mouseY(get, null) : Float;
 
+	/**
+	* 当前缩放，即 stageWidth / width 的值。
+	*/
 	public var zoom(get, set) : Int;
 	public var defaultSmooth(get, set) : Bool;
 	public var renderer(get, set) : RenderContext;
@@ -60,6 +71,14 @@ class Scene extends Layers implements h3d.IDrawable implements hxd.SceneEvents.I
 	function get_renderer() return ctx;
 	function set_renderer(v) { ctx = v; return v; }
 
+	/**
+	设置 宽和高的基值, 未来每次 resize 事件,将以这个值为基础缩放.
+
+	例如 设为 (240 , 300)后,如果 App 窗口大小为 480 * 600, 那么当前缩放将为 2.0
+
+	* @param w
+	* @param h
+	*/
 	public function setFixedSize( w : Int, h : Int ) {
 		width = w;
 		height = h;
@@ -252,7 +271,7 @@ class Scene extends Layers implements h3d.IDrawable implements hxd.SceneEvents.I
 		}
 		return null;
 	}
-
+	// 所有交互事件,都会传递
 	public function addEventListener( f : hxd.Event -> Void ) {
 		eventListeners.push(f);
 	}

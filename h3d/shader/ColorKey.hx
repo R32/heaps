@@ -1,5 +1,7 @@
 package h3d.shader;
-
+/**
+	通常用于忽略背影颜色, 也就是忽略图片的底色以达到透明图片的效果.	
+*/
 class ColorKey extends hxsl.Shader {
 
 	static var SRC = {

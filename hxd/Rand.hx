@@ -37,11 +37,18 @@ class Rand {
 		h ^= h >> 16;
 		return h;
 	}
-
+	
+	/**
+	* 返回 Int 随机数,返回值将 0 <= ret < n.
+	* @param	n
+	*/
 	public inline function random( n ) {
 		return uint() % n;
 	}
-
+	
+	/**
+	打乱数组
+	*/
 	public inline function shuffle<T>( a : Array<T> ) {
 		var len = a.length;
 		for( i in 0...len ) {
@@ -53,12 +60,19 @@ class Rand {
 		}
 	}
 
+	/**
+	* 返回 Float 类型随机数 0 <= n < 1.0 
+	*/
 	public inline function rand() {
 		// we can't use a divider > 16807 or else two consecutive seeds
 		// might generate a similar float
 		return (uint() % 10007) / 10007.0;
 	}
-
+	
+	/**
+	* 如果 scale == 1,返回值为: -1.0 < n < 1.0
+	* @param	scale=1.0
+	*/
 	public inline function srand(scale=1.0) {
 		return ((int() % 10007) / 10007.0) * scale;
 	}

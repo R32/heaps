@@ -44,6 +44,11 @@ class Matrix {
 		_41 = 0.0; _42 = 0.0; _43 = 0.0; _44 = 0.0;
 	}
 
+	/**
+	将当前矩阵转换为恒等或单位矩阵。恒等矩阵中的主对角线位置上的元素的值为一，而所有其他元素的值为零
+
+	通过应用恒等矩阵转换的对象不执行任何转换。换句话说，如果一个矩阵与一个恒等矩阵相乘，则会生成一个与原始矩阵相同（恒等）的矩阵
+	*/
 	public function identity() {
 		_11 = 1.0; _12 = 0.0; _13 = 0.0; _14 = 0.0;
 		_21 = 0.0; _22 = 1.0; _23 = 0.0; _24 = 0.0;
@@ -558,6 +563,10 @@ class Matrix {
 	static inline var lumB = 0.072169;
 
 	static inline var SQ13 = 0.57735026918962576450914878050196; // sqrt(1/3)
+
+	/**
+	色彩的基本属性, 就是平常所说的颜色名称，如红色、黄色等, 取值范围 0~2PI(0~360度)
+	*/
 	public function colorHue( hue : Float ) {
 		if( hue == 0. )
 			return;
@@ -584,6 +593,10 @@ class Matrix {
 		multiply3x4(this, tmp);
 	}
 
+
+	/**
+	饱合度. 指色彩的纯度，越高色彩越纯，低则逐渐变灰，取 0~1.0 的数值
+	*/
 	public function colorSaturate( sat : Float ) {
 		sat += 1;
 		var is = 1 - sat;
@@ -606,6 +619,9 @@ class Matrix {
 		multiply3x4(this, tmp);
 	}
 
+	/**
+	对比度.  0~1.0
+	*/
 	public function colorContrast( contrast : Float ) {
 		var tmp = tmp;
 		var v = contrast + 1;
@@ -624,6 +640,9 @@ class Matrix {
 		multiply3x4(this, tmp);
 	}
 
+	/**
+	亮度. 取值 0 ~ 1.0
+	*/
 	public function colorLightness( lightness : Float ) {
 		_41 += lightness;
 		_42 += lightness;
@@ -647,7 +666,9 @@ class Matrix {
 		multiply3x4(this, tmp);
 	}
 
-
+	/**
+	??? 调整颜色位数? 比如 16, 24, 32...256 位颜色, 但 blend 是什么了?
+	*/
 	public function colorBits( bits : Int, blend : Float ) {
 		var t11 = 0., t12 = 0., t13 = 0.;
 		var t21 = 0., t22 = 0., t23 = 0.;

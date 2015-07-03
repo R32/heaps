@@ -45,10 +45,12 @@ class Segment {
 		}
 	}
 
+	// 点p 垂直于 线段 的距离
 	public inline function distance( p : Point ) {
 		return Math.sqrt(distanceSq(p));
 	}
 
+	// 计算投影点, 如果投影点超出了此线段的范围, 则投影点将分别等于此线段的二个点
 	public inline function project( p : Point ) : Point {
 		var px = p.x - x;
 		var py = p.y - y;

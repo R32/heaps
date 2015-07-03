@@ -1,5 +1,8 @@
 package hxd.net;
 
+/**
+目前仅支持 flash, 即通过 URLLoader 加载 url 指定资源. 感觉和 hxd.File.load 重复了
+*/
 class BinaryLoader {
 
 	public var url(default, null) : String;

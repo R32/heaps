@@ -86,6 +86,9 @@ class BasicElement extends BatchElement {
 
 }
 
+/**
+ 适合处理批量的 sprite 动画, 例如粒子系统。
+*/
 class SpriteBatch extends Drawable {
 
 	public var tile : Tile;

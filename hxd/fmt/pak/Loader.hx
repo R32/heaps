@@ -1,5 +1,8 @@
 package hxd.fmt.pak;
 
+/**
+带进度条显示的 pak 文件加载器, 用于从网络上加载文件，以 flash.net.URLLoader 的方式
+*/
 class Loader extends h2d.Sprite {
 
 	var onDone : Void -> Void;

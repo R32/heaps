@@ -2,6 +2,9 @@ package hxd;
 
 private typedef InnerData = #if flash flash.utils.ByteArray #else haxe.io.BytesOutput #end
 
+/**
+* abstract 类,flash平台原形为 LITTLE_ENDIAN 的 ByteArray ,其它平台为 BytesOutput.
+*/
 abstract BytesBuffer(InnerData) {
 
 	public var length(get, never) : Int;

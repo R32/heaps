@@ -3,8 +3,10 @@ package hxd;
 import haxe.io.Bytes;
 
 /**
- * Tries to provide consistent access to haxe.io.bytes from any primitive
- */
+  Tries to provide consistent access to haxe.io.bytes from any primitive
+  
+  ByteArray 与 Bytes 的互转. 其实在 Flash 平台很简单,但是跨平台就不好说了.
+*/
 class ByteConversions{
 
 #if (flash || openfl)

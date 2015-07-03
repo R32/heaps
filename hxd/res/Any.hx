@@ -16,7 +16,14 @@ private class SingleFileSystem extends hxd.fs.BytesFileSystem {
 	}
 
 }
-
+/**
+  表示一个任意类型资源, 必须需要知道文件类型, 才能够调用相应方法以得到想要的资源类型。
+  
+  例如: 假如知道是文本文件, 那么可以在 new Any() 之后调用 toText(), 
+  
+  一般情况下不需要用到这个类, 它只是通常被 Loader 调用, 因为这个类只是从 loader 属性中取值,
+  例如: toFbx 与 Loader 类中的 loadFbxModel 方法是一样的.
+*/
 @:access(hxd.res.Loader)
 class Any extends Resource {
 
@@ -63,6 +70,9 @@ class Any extends Resource {
 		return new hxd.impl.ArrayIterator([for( f in entry ) new Any(loader,f)]);
 	}
 
+	/**
+	 可用于运行时通过二进制数据加载资源. 可以通过 hxd.net.BinaryLoader(目前仅支持flash) 从网络加载资源。
+	*/
 	public static function fromBytes( path : String, bytes : haxe.io.Bytes ) {
 		var fs = new SingleFileSystem(path,bytes);
 		return new Loader(fs).load(path);

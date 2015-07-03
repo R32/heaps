@@ -1,6 +1,7 @@
 package h3d;
 import h3d.mat.Data;
 
+
 private class TargetTmp {
 	public var t : h3d.mat.Texture;
 	public var next : TargetTmp;
@@ -14,26 +15,65 @@ private class TargetTmp {
 	}
 }
 
+/**
+引擎底层
+*/
 class Engine {
-
+	
+	/**
+	 底层3D驱动, stage3D, webgl, opengl
+	*/
 	public var driver(default,null) : h3d.impl.Driver;
 
-	public var mem(default,null) : h3d.impl.MemoryManager;
-
+	/**
+	内存管理 
+	*/
+	public var mem(default, null) : h3d.impl.MemoryManager;
+	
+	/**
+	是否为显卡渲染, 或 CPU 模拟。 默认为 true
+	*/
 	public var hardware(default, null) : Bool;
+	
+	/**
+	if autoResize == true then stage.stageWidth
+	*/
 	public var width(default, null) : Int;
+	
 	public var height(default, null) : Int;
+	
 	public var debug(default, set) : Bool;
 
+	/**
+	？？？当前帧绘制的三角形总量
+	*/
 	public var drawTriangles(default, null) : Int;
 	public var drawCalls(default, null) : Int;
 	public var shaderSwitches(default, null) : Int;
-
+	
+	/**
+	背影颜色 
+	*/
 	public var backgroundColor : Null<Int> = 0xFF000000;
+	
+	/**
+	自动设置width/height为整个画布大小，默认为 true
+	*/
 	public var autoResize : Bool;
+	
+	/**
+	 全屏设置
+	*/
 	public var fullScreen(default, set) : Bool;
-
+	
+	/**
+	当前 FPS 
+	*/
 	public var fps(get, never) : Float;
+	
+	/**
+	到当前运行帧数总数 
+	*/
 	public var frameCount : Int = 0;
 
 	var realFps : Float;
@@ -85,7 +125,7 @@ class Engine {
 		driver = d;
 		if( mem != null ) mem.driver = d;
 	}
-
+	
 	public static inline function getCurrent() {
 		return CURRENT;
 	}

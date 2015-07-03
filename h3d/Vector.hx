@@ -3,6 +3,8 @@ using hxd.Math;
 
 /**
 	A 4 floats vector. Everytime a Vector is returned, it means a copy is created.
+
+	x, y, z, w == r, g, b, a
 **/
 @:noDebug
 class Vector {
@@ -38,7 +40,10 @@ class Vector {
 		return new Vector(x + v.x, y + v.y, z + v.z, w + v.w);
 	}
 
-	// note : cross product is left-handed
+
+	/**
+	 cross product is left-handed
+	*/
 	public inline function cross( v : Vector ) {
 		return new Vector(y * v.z - z * v.y, z * v.x - x * v.z,  x * v.y - y * v.x, 1);
 	}

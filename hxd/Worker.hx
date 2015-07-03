@@ -1,5 +1,11 @@
 package hxd;
 
+/**
+如果你想自定义 Worker 参见 hxd/snd/Worker，
+
+如果你在分析源码，请注意 debugPeer 是用来模似工作线程的一个伪线程，甚至它的 isWorker 变量都为 true，
+只有 useWorker 才能真正的检测是否使用了真实的工作线程
+*/
 class Worker<T:EnumValue> {
 
 	#if flash

@@ -10,6 +10,10 @@ typedef FontBuildOptions = {
 	FontBuilder allows to dynamicaly create a Bitmap font from a vector font.
 	Depending on the platform this might require the font to be available as part of the resources,
 	or it can be embedded manually with hxd.res.Embed.embedFont
+
+	FontBuilder 能动态创建 BitmapFont(参看 build 方法，通过动态创建 TextField，然后以 draw 的方式将文字画到 png32 图片上)
+
+	一些平台可能需要将字体文件通过资源管理器（hxd.Red）嵌入，或者手动调用 hxd.res.Embed.embedFont 嵌入字体文件。
 **/
 @:access(h2d.Font)
 @:access(h2d.Tile)

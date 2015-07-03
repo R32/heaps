@@ -1,5 +1,8 @@
 package hxd.res;
 
+/**
+默认的资源类，如果某个资源不能被识别为 声音,图片,字体 FBX模型,之类的资源
+*/
 class Resource {
 
 	public static var LIVE_UPDATE = #if debug true #else false #end;

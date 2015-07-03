@@ -23,6 +23,9 @@ class BitmapInnerDataImpl {
 }
 #end
 
+/**
+ 使用各平台所依赖的 BitmapData, 相对于 Pixels 来说, 这个类提供更多操作像素的方法。
+*/
 class BitmapData {
 
 	#if (flash || nme || openfl)
