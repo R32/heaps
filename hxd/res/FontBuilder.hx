@@ -20,10 +20,10 @@ class FontBuilder {
 	var innerTex : h3d.mat.Texture;
 
 	function new(name, size, opt) {
-		this.font = new h2d.Font(name, size);
 		this.options = opt == null ? { } : opt;
 		if( options.antiAliasing == null ) options.antiAliasing = true;
 		if( options.chars == null ) options.chars = hxd.Charset.DEFAULT_CHARS;
+		this.font = new h2d.Font(name, size, options.chars.length);
 	}
 
 	#if flash
@@ -68,7 +68,6 @@ class FontBuilder {
 		do {
 			bmp = new flash.display.BitmapData(width, height, true, 0);
 			bmp.lock();
-			font.glyphs = new Map();
 			all = [];
 			var m = new flash.geom.Matrix();
 			var x = 0, y = 0, lineH = 0;
@@ -95,7 +94,7 @@ class FontBuilder {
 				bmp.draw(tf, m);
 				var t = new h2d.Tile(innerTex, x, y, w - 1, h - 1);
 				all.push(t);
-				font.glyphs.set(options.chars.charCodeAt(i), new h2d.Font.FontChar(t,w-1));
+				font.addChar(new h2d.Font.FontChar(t, w-1, options.chars.charCodeAt(i)));
 				// next element
 				if( h > lineH ) lineH = h;
 				x += w + 1;
@@ -179,7 +178,6 @@ class FontBuilder {
 			ctx.textAlign = 'left';
 			ctx.textBaseline = 'top'; // important!
 			ctx.fillStyle = 'red';
-			font.glyphs = new Map();
 			all = [];
 			var x = 0, y = 0, lineH = 0;
 			for( i in 0...options.chars.length ) {
@@ -205,7 +203,7 @@ class FontBuilder {
 				ctx.fillText(options.chars.charAt(i), x, y);
 				var t = new h2d.Tile(innerTex, x, y, w - 1, h - 1);
 				all.push(t);
-				font.glyphs.set(options.chars.charCodeAt(i), new h2d.Font.FontChar(t,w - (1 + xMarg)));
+				font.addChar(new h2d.Font.FontChar(t, w - (1 + xMarg), options.chars.charCodeAt(i)));
 				// next element
 				if( h > lineH ) lineH = h;
 				x += w + 1;
@@ -282,7 +280,6 @@ class FontBuilder {
 
 		var all, px;
 		do {
-			font.glyphs = new Map();
 			all = [];
 			var x = 0, y = 0, lineH = font.lineHeight;
 			px = haxe.io.Bytes.alloc( width * height  );
@@ -308,7 +305,7 @@ class FontBuilder {
 				}
 				var t = new h2d.Tile(innerTex, x, y, gx+size.w, gy+size.h);
 				all.push(t);
-				font.glyphs.set(options.chars.charCodeAt(i), new h2d.Font.FontChar(t,size.adv-1));
+				font.addChar(new h2d.Font.FontChar(t, size.adv - 1, options.chars.charCodeAt(i)));
 				// next element
 				x += w + 1;
 			}
@@ -323,7 +320,7 @@ class FontBuilder {
 				var v = Math.round(k.x * kernratio);
 				if( v == 0 || !gcode.exists(k.right_glyph) || !gcode.exists(k.left_glyph) )
 					continue;
-				var c = font.glyphs.get( gcode.get(k.right_glyph) );
+				var c = font.getChar( gcode.get(k.right_glyph) );
 				c.addKerning( gcode.get(k.left_glyph), v );
 			}
 		}

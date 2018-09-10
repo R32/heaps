@@ -21,7 +21,7 @@ class Charset {
 		Polish support
 	**/
 	public static var POLISH = "ĄĆĘŁŃÓŚŹŻąćęłńóśźż";
-	
+
 	/**
 		Turkish support
 	**/
@@ -98,14 +98,8 @@ class Charset {
 		m("–".code, "-".code);
 	}
 
-	public function resolveChar<T>( code : Int, glyphs : Map<Int,T> ) : Null<T> {
-		var c : Null<Int> = code;
-		while( c != null ) {
-			var g = glyphs.get(c);
-			if( g != null ) return g;
-			c = map.get(c);
-		}
-		return null;
+	public inline function resolveChar( code : Int ):Null<Int> {
+		return map.get(code);
 	}
 
 	public function isCJK(code) {

@@ -10,15 +10,19 @@ class Kerning {
 	}
 }
 
+@:allow(h2d.Font)
 class FontChar {
 
 	public var t : h2d.Tile;
 	public var width : Int;
 	var kerning : Null<Kerning>;
+	var next: Null<FontChar>;
+	var code: Int;
 
-	public function new(t,w) {
+	public function new(t,w,c) {
 		this.t = t;
 		this.width = w;
+		this.code = c;
 	}
 
 	public function addKerning( prevChar : Int, offset : Int ) {
@@ -38,7 +42,7 @@ class FontChar {
 	}
 
 	public function clone() {
-		var c = new FontChar(t.clone(), width);
+		var c = new FontChar(t.clone(), width, code);
 		c.kerning = kerning;
 		return c;
 	}
@@ -53,57 +57,91 @@ class Font {
 	public var lineHeight(default, null) : Int;
 	public var tile(default,null) : h2d.Tile;
 	public var charset : hxd.Charset;
-	var glyphs : Map<Int,FontChar>;
+	var glyphs: haxe.ds.Vector<FontChar>;
+	var bits: Int;
+	var nchars: Int;
 	var nullChar : FontChar;
 	var defaultChar : FontChar;
 	var initSize:Int;
 	var offsetX:Int = 0;
 	var offsetY:Int = 0;
 
-	function new(name,size) {
+	function new(name,size,nchars) {
 		this.name = name;
 		this.size = size;
 		this.initSize = size;
-		glyphs = new Map();
-		defaultChar = nullChar = new FontChar(new Tile(null, 0, 0, 0, 0),0);
+		this.nchars = nchars;
+		this.bits = bitsWidth(nchars);
+		glyphs = new haxe.ds.Vector(1 << this.bits);
+		defaultChar = nullChar = new FontChar(new Tile(null, 0, 0, 0, 0),0, 0);
 		charset = hxd.Charset.getDefault();
 	}
 
-	public inline function getChar( code : Int ) {
-		var c = glyphs.get(code);
-		if( c == null ) {
-			c = charset.resolveChar(code, glyphs);
-			if( c == null )
+	public function getChar( code : Int ) {
+		var c = glyphs.get(hash(code));
+		while (c != null) {
+			if (c.code == code)
+				return c;
+			c = c.next;
+		}
+		if (c == null) {
+			var mapp:Null<Int> = charset.resolveChar(code);
+			while (mapp != null) {
+				c = glyphs.get(hash(mapp));
+				while (c != null) {
+					if (c.code == mapp)
+						break;
+					c = c.next;
+				}
+				if (c != null)
+					break;
+				mapp = charset.resolveChar(mapp);
+			}
+			if (c == null)
 				c = code == "\r".code || code == "\n".code ? nullChar : defaultChar;
 		}
 		return c;
+	}
+
+	public function addChar( c: FontChar ) {
+		var pos = hash(c.code);
+		c.next = glyphs.get(pos);
+		glyphs.set(pos, c);
 	}
 
 	public function setOffset(x,y) {
 		var dx = x - offsetX;
 		var dy = y - offsetY;
 		if( dx == 0 && dy == 0 ) return;
-		for( g in glyphs ) {
-			g.t.dx += dx;
-			g.t.dy += dy;
+		for ( i in 0...glyphs.length ) {
+			var c = glyphs[i];
+			while (c != null) {
+				c.t.dx += dx;
+				c.t.dy += dy;
+				c = c.next;
+			}
 		}
 		this.offsetX += dx;
 		this.offsetY += dy;
 	}
 
 	public function clone() {
-		var f = new Font(name, size);
+		var f = new Font(name, size, this.nchars);
 		f.baseLine = baseLine;
 		f.lineHeight = lineHeight;
 		f.tile = tile.clone();
 		f.charset = charset;
 		f.defaultChar = defaultChar.clone();
-		for( g in glyphs.keys() ) {
-			var c = glyphs.get(g);
+		for ( i in 0...glyphs.length ) {
+			var c = glyphs[i];
+			if (c == null) continue;
 			var c2 = c.clone();
-			if( c == defaultChar )
-				f.defaultChar = c2;
-			f.glyphs.set(g, c2);
+			f.glyphs[i] = c2;
+			while (c.next != null) {
+				c2.next = c.next.clone();
+				c2 = c2.next;
+				c = c.next;
+			}
 		}
 		return f;
 	}
@@ -113,11 +151,15 @@ class Font {
 	**/
 	public function resizeTo( size : Int ) {
 		var ratio = size / initSize;
-		for( c in glyphs ) {
-			c.width = Std.int(c.width * ratio);
-			c.t.scaleToSize(Std.int(c.t.width * ratio), Std.int(c.t.height * ratio));
-			c.t.dx = Std.int(c.t.dx * ratio);
-			c.t.dy = Std.int(c.t.dy * ratio);
+		for ( i in 0...glyphs.length ) {
+			var c = glyphs[i];
+			while (c != null) {
+				c.width = Std.int(c.width * ratio);
+				c.t.scaleToSize(Std.int(c.t.width * ratio), Std.int(c.t.height * ratio));
+				c.t.dx = Std.int(c.t.dx * ratio);
+				c.t.dy = Std.int(c.t.dy * ratio);
+				c = c.next;
+			}
 		}
 		lineHeight = Std.int(lineHeight * ratio);
 		baseLine = Std.int(baseLine * ratio);
@@ -132,4 +174,7 @@ class Font {
 		tile.dispose();
 	}
 
+	inline function hash(i) return (i * 0x61C88647) >>> (32 - this.bits);
+
+	inline function bitsWidth(n: Int) return Std.int(Math.log(n) * 1.4426950408889634 + 0.999999999);
 }
